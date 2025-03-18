@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>  
+<html>
+<head>  
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />  
+<title>seng baidumap_标记demo</title>  
+<style type="text/css">  
+html{height:100%}  
+body{height:100%;margin:0px;padding:0px}  
+#container{height:100%}  
+</style>  
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=3.0&ak=yourkey"></script>
+<script type="text/javascript" src="./js/map_style.js"></script>
+<script type="text/javascript" src="./js/map_point.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+
+</head>  
+ 
+<body>  
+<div id="container"></div> 
+
+<script type="text/javascript"> 
+var map = new BMap.Map("container");
+
+// 初始化地图实例  
+var centerpoint = new BMap.Point(120.17514,30.282249,);
+
+map.centerAndZoom(centerpoint, 12);
+map.enableScrollWheelZoom(true);
+map.setMapStyleV2({styleJson: THEME_CUS});
+
+
+// 初始化地图聚合实例  
+var markerClusterer_styles = [
+    {
+        url: "./image/m1_24px.png", // 聚合图标URL
+        size: new BMap.Size(24, 24), // 图标大小
+        textColor: "#ffffff", // 文字颜色
+        textSize: 12, // 文字大小
+        anchorText: new BMap.Size(25, -10), // 文字锚点位置
+        anchorIcon: new BMap.Size(25, 50) // 图标锚点位置
+    },
+    {
+        url: "./image/m1_50px.png",
+        size: new BMap.Size(50, 50),
+        textColor: "#ff0000",
+        textSize: 14,
+        anchorText: new BMap.Size(30, -12),
+        anchorIcon: new BMap.Size(30, 60)
+    }
+];
+var markerClusterer = new BMapLib.MarkerClusterer(map, {styles: markerClusterer_styles});
+
+
+//1类标记函数
+function map_add_markers_type1()
+{
+		var type1_points = [
+	    { lng: 120.17514, lat: 30.235249, title: "t1_point1"  },
+	  ];
+
+  	var type1_points = type1_data;
+	  
+		type1_points.forEach(
+	  function(item) {
+	    var point = new BMap.Point(item.lng, item.lat);
+	   	var myIcon = new BMap.Icon( './image/type1.png', new BMap.Size(96, 96));
+	    var marker = new BMap.Marker(point, { icon: myIcon });
+	
+	    map.addOverlay(marker);
+	    marker.setTitle(item.title);
+	 }
+	 ); 
+}
+
+//2类标记函数
+function map_add_markers_type2(zoomLevel,is_merged)
+{
+	  var type2_points = [
+    { lng: 120.19514, lat: 30.435249, title: "t2_point1"  },
+    { lng: 120.48714, lat: 30.575182, title: "t2_point2"  }
+	  ];
+
+  	var type2_points = type2_data;
+
+    var v_point_pic = './image/type2_12px.png';
+    var v_point_pic_width = 12; 
+    if (zoomLevel>=11) {
+    	    var v_point_pic = './image/type2_24px.png';
+          var v_point_pic_width = 24; 
+    	}
+    if (zoomLevel>9 && zoomLevel<=10) {
+    	    var v_point_pic = './image/type2_12px.png';
+          var v_point_pic_width = 12; 
+    	}
+    if (zoomLevel>8 && zoomLevel<=9) {
+    	    var v_point_pic = './image/type2_6px.png';
+          var v_point_pic_width = 6; 
+    	}
+    if (zoomLevel<=8) {
+    	    var v_point_pic = './image/type2_2px.png';
+          var v_point_pic_width = 2; 
+    	}
+	  
+	var markers = [];
+	type2_points.forEach(
+	  function(item) {
+	    var point = new BMap.Point(item.lng, item.lat);
+	   	var myIcon = new BMap.Icon( v_point_pic, new BMap.Size(v_point_pic_width, v_point_pic_width));
+	    var marker = new BMap.Marker(point, { icon: myIcon });
+	
+	    map.addOverlay(marker);
+	    marker.setTitle(item.title);
+	    markers.push(marker);
+	 }
+	 );
+
+  if(is_merged) { markerClusterer.addMarkers(markers); }
+ 
+}
+
+//增加标记函数，可以分成3类
+function map_add_markers()
+{
+	var zoomLevel = map.getZoom(); 
+	
+	map.clearOverlays();
+	markerClusterer.clearMarkers();
+	
+	map_add_markers_type1();
+	if (zoomLevel <=7)
+	{map_add_markers_type2(zoomLevel,true);}
+	else
+	{map_add_markers_type2(zoomLevel,false);}
+
+}
+
+
+//*****初次加载
+map_add_markers();
+
+//*****注册缩放响应函数
+map.addEventListener('zoomend', function() {
+    map_add_markers();
+});
+
+
+</script>  
+
+</body>  
+</html>
