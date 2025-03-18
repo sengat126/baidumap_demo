@@ -16,7 +16,7 @@
 
 
 ### 使用方法，
-1.修改百度map key(https://lbsyun.baidu.com/)<br>
+1.修改百度map key(申请地址https://lbsyun.baidu.com/)<br>
 2.数据可以直接改js/map_type2_point.js,每个点3个值(lng,lat,title)，提供附件的excel文件<br>
 3.具体图片可以修改image目录下的对应图片<br>
 4.地图格式使用百度地图个性化编辑器(https://lbsyun.baidu.com/customv2/editor/12c7c5b79f772992520d8fe1cf434a98)，复制到js/map_style.js<br>
